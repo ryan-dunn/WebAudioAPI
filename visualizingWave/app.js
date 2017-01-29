@@ -126,8 +126,8 @@ function visualize(stream) {
   var source = audioCtx.createMediaStreamSource(stream);
 
   var analyser = audioCtx.createAnalyser();
-  //analyser.fftSize = 2048;
-  analyser.fftSize = 32;
+  analyser.fftSize = 2048;
+  //analyser.fftSize = 32;
   var bufferLength = analyser.frequencyBinCount;
   var dataArray = new Uint8Array(bufferLength);
 
@@ -224,45 +224,36 @@ console.log(dataArray);
     canvasCtxRd.fillStyle = 'rgb(200, 200, 200)';
     canvasCtxRd.fillRect(0, 0, WIDTH, HEIGHT);
 
-    canvasCtxRd.beginPath();
-
-    canvasCtxRd.lineWidth = 10;
-    canvasCtxRd.strokeStyle = 'rgb(0, 0, 0)';
-
-    var sliceWidth = WIDTHRD / bufferLength;
-    var x = 0;
-    var bufferLengthDiv = bufferLength / 8;
-
-    var highestNum = Math.max(...dataArray);
-    var v1 = highestNum / 128;
-    var y1 = v1 * (canvasRd.height/2);
-
-    canvasCtxRd.lineTo(x, y1);
-
-    document.getElementById("waveformNum").innerHTML = highestNum;
-    canvasCtxRd.lineTo(canvasRd.width, canvasRd.height/2);
-    canvasCtxRd.stroke();
-
-    //second path
-    canvasCtxRd.beginPath();
-
-    canvasCtxRd.lineWidth = 10;
-    canvasCtxRd.strokeStyle = 'rgb(0, 0, 0)';
-
-    var sliceWidth = WIDTHRD / bufferLength;
-    var x = 0;
-    var bufferLengthDiv = bufferLength / 8;
+    //console.log(xD);
 
     var lowestNum = Math.min(...dataArray);
-    var v2 = lowestNum / 128;
-    var y2 = v2 * (canvasRd.height/2);
+    var vL = (lowestNum / 128)-1;
+    var yL = vL * (HEIGHTRD/2);
 
-    canvasCtxRd.lineTo(x, y2);
+    var highestNum = Math.max(...dataArray);
+    var vH = (highestNum / 128)-1;
+    var yH = vH * (HEIGHTRD/2);
 
-    //document.getElementById("waveformNum").innerHTML = highestNum;
-    canvasCtxRd.lineTo(canvasRd.width, canvasRd.height/2);
-    canvasCtxRd.stroke();
+    sliceWidth = WIDTH * 1/20;
+    xSW = 0;
+    for(var i = 0; i < 20; i++) {
+      var f = i;
 
+      canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
+    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/20, yL);
+
+    canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
+    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/20, yH);
+
+    canvasCtxRd.beginPath();              
+    canvasCtxRd.lineWidth = "1";
+    canvasCtxRd.strokeStyle = "green";  // Green path
+    canvasCtxRd.moveTo(xSW, HEIGHTRD);
+    canvasCtxRd.lineTo(xSW, 0);
+    canvasCtxRd.stroke();  // Draw it
+
+      xSW += sliceWidth;
+    }
 
   }
 }
