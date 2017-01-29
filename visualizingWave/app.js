@@ -142,7 +142,7 @@ console.log(dataArray);
   HEIGHTRD = canvasRd.height;
 
   draw();
-  drawRd();
+  //drawRd();
 
   function draw() {
 
@@ -215,35 +215,62 @@ console.log(dataArray);
 
   }
 
-  function drawRd() {
+  function getLow() {
 
-    requestAnimationFrame(drawRd);
+    requestAnimationFrame(getLow);
 
     analyser.getByteTimeDomainData(dataArray);
-
-    canvasCtxRd.fillStyle = 'rgb(200, 200, 200)';
-    canvasCtxRd.fillRect(0, 0, WIDTH, HEIGHT);
-
-    //console.log(xD);
 
     var lowestNum = Math.min(...dataArray);
     var vL = (lowestNum / 128)-1;
     var yL = vL * (HEIGHTRD/2);
 
+    return yL;
+
+  }
+
+    function getHigh() {
+
+    requestAnimationFrame(getHigh);
+
+    analyser.getByteTimeDomainData(dataArray);
+
     var highestNum = Math.max(...dataArray);
     var vH = (highestNum / 128)-1;
     var yH = vH * (HEIGHTRD/2);
 
-    sliceWidth = WIDTH * 1/20;
-    xSW = 0;
-    for(var i = 0; i < 20; i++) {
-      var f = i;
+    return yH;
+
+  }
+
+  window.setInterval(drawRd, 20);
+
+  function drawRdTest(){
+    yH = getHigh();
+  yL = getLow();
+
+  document.getElementById("waveformNum").innerHTML = 'Hign Number:' + yH + ' Low Number:' + yL + '';
+  }
+
+  var xSW = 0;
+
+  canvasCtxRd.fillStyle = 'rgb(200, 200, 200)';
+    canvasCtxRd.fillRect(0, 0, WIDTH, HEIGHT);
+  
+  function drawRd(){
+  //document.getElementById("waveformNum").innerHTML = drawRd();
+
+  yH = getHigh();
+  yL = getLow();
+
+
+sliceWidth = WIDTH * 1/100;
 
       canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
-    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/20, yL);
+    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/100, yL);
 
     canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
-    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/20, yH);
+    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/100, yH);
 
     canvasCtxRd.beginPath();              
     canvasCtxRd.lineWidth = "1";
@@ -253,8 +280,7 @@ console.log(dataArray);
     canvasCtxRd.stroke();  // Draw it
 
       xSW += sliceWidth;
-    }
 
-  }
+}
 }
 
