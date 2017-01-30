@@ -243,44 +243,55 @@ console.log(dataArray);
 
   }
 
-  window.setInterval(drawRd, 20);
+  var runDraw = setInterval(drawRd, 20);
 
   function drawRdTest(){
     yH = getHigh();
-  yL = getLow();
-
-  document.getElementById("waveformNum").innerHTML = 'Hign Number:' + yH + ' Low Number:' + yL + '';
+    yL = getLow();
+    document.getElementById("waveformNum").innerHTML = 'Hign Number:' + yH + ' Low Number:' + yL + '';
   }
 
   var xSW = 0;
-
-  canvasCtxRd.fillStyle = 'rgb(200, 200, 200)';
-    canvasCtxRd.fillRect(0, 0, WIDTH, HEIGHT);
+  var stopTime = 1;
+  var hiLoArray = [];
   
   function drawRd(){
   //document.getElementById("waveformNum").innerHTML = drawRd();
+    yH = getHigh();
+    yL = getLow();
+    hiLoArray.push([yH,yL]);
+    console.log(hiLoArray);
 
-  yH = getHigh();
-  yL = getLow();
+    canvasCtxRd.fillStyle = 'rgb(200, 200, 200)';
+      canvasCtxRd.fillRect(0, 0, WIDTH, HEIGHT);
 
-
-sliceWidth = WIDTH * 1/100;
+    for(i = 0; i < hiLoArray.length; i++){
 
       canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
-    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/100, yL);
+      canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/stopTime, hiLoArray[i][1]);
 
-    canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
-    canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/100, yH);
+      canvasCtxRd.fillStyle = 'rgb(0, 0, 0)';
+      canvasCtxRd.fillRect(xSW, HEIGHTRD/2, WIDTHRD/stopTime, hiLoArray[i][0]);
 
-    canvasCtxRd.beginPath();              
-    canvasCtxRd.lineWidth = "1";
-    canvasCtxRd.strokeStyle = "green";  // Green path
-    canvasCtxRd.moveTo(xSW, HEIGHTRD);
-    canvasCtxRd.lineTo(xSW, 0);
-    canvasCtxRd.stroke();  // Draw it
+      canvasCtxRd.beginPath();              
+      canvasCtxRd.lineWidth = "1";
+      canvasCtxRd.strokeStyle = "green";  // Green path
+      canvasCtxRd.moveTo(xSW, HEIGHTRD);
+      canvasCtxRd.lineTo(xSW, 0);
+      canvasCtxRd.stroke();  // Draw it
 
+      sliceWidth = WIDTH * 1/stopTime;
       xSW += sliceWidth;
+    }
 
-}
+    xSW = 0;
+
+    stopTime++;
+
+    if(stopTime == 100){
+      clearInterval(runDraw);
+    }
+
+  }
 }
 
